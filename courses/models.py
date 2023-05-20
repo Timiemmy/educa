@@ -17,15 +17,16 @@ class Subject(models.Model):
 
 
 class Course(models.Model):
-    owner = models.ForeignKey(User, related_name='courses_created',
-                              on_delete=models.CASCADE)  # The creator of the course
-    # The subject the course belongs to
-    subject = models.ForeignKey(
-        Subject, related_name='courses', on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)  # course title
-    slug = models.SlugField(max_length=200, unique=True)  # title slug
-    overview = models.TextField()  # Overview of the course
-    created = models.DateTimeField(auto_now_add=True)  # When it is created
+    owner = models.ForeignKey(User,
+                              related_name='courses_created',
+                              on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject,
+                                related_name='courses',
+                                on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
+    overview = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created']
@@ -35,8 +36,9 @@ class Course(models.Model):
 
 
 class Module(models.Model):
-    course = models.ForeignKey(
-        Course, related_name='modules', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course,
+                               related_name='modules',
+                               on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     order = OrderField(blank=True, for_fields=['course'])
@@ -49,16 +51,17 @@ class Module(models.Model):
 
 
 class Content(models.Model):
-    module = models.ForeignKey(
-        Module, related_name='contents', on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
-                                     limit_choices_to={'model__in': ('text',  # Added limit_choices_to argument to limit the ContentType objects that can be used for the generic relation.
-                                                                     'video',  # using the model__in field lookup to filter the query to the ContentType objects with a model attribute that is 'text', 'video', 'image', or 'file'.
-                                                                     'image',
-                                                                     'file')})  # A ForeignKey field to the ContentType model.
-    # A PositiveIntegerField to store the primary key of the related object.
+    module = models.ForeignKey(Module,
+                               related_name='contents',
+                               on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType,
+                                     on_delete=models.CASCADE,
+                                     limit_choices_to={'model__in': (
+                                         'text',
+                                         'video',
+                                         'image',
+                                         'file')})
     object_id = models.PositiveIntegerField()
-    # A GenericForeignKey field to the related object combining the two previous fields.
     item = GenericForeignKey('content_type', 'object_id')
     order = OrderField(blank=True, for_fields=['module'])
 
@@ -67,8 +70,9 @@ class Content(models.Model):
 
 
 class ItemBase(models.Model):
-    owner = models.ForeignKey(
-        User, related_name='%(class)s_related', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User,
+                              related_name='%(class)s_related',
+                              on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
