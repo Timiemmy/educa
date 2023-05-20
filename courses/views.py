@@ -65,7 +65,6 @@ class CourseDeleteView(OwnerCourseMixin, DeleteView):
     permission_required = 'courses.delete_course'
 
 
-
 class CourseModuleUpdateView(TemplateResponseMixin, View):
     '''
     TemplateResponseMixin: This mixin takes charge of rendering templates and returning an
@@ -99,7 +98,7 @@ class CourseModuleUpdateView(TemplateResponseMixin, View):
         return self.render_to_response({'course': self.course,
                                         'formset': formset})
 
-'''
+
 class ContentCreateUpdateView(TemplateResponseMixin, View):
     module = None
     model = None
@@ -153,6 +152,7 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
                                         'object': self.obj})
 
 
+
 class ContentDeleteView(View):
     def post(self, request, id):
         content = get_object_or_404(Content,
@@ -173,7 +173,7 @@ class ModuleContentListView(TemplateResponseMixin, View):
                                    course__owner=request.user)
         return self.render_to_response({'module': module})
 
-
+'''
 class ModuleOrderView(CsrfExemptMixin,
                       JsonRequestResponseMixin,
                       View):
